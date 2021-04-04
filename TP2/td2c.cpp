@@ -102,7 +102,6 @@ int main(int argc, char *argv[])
 
   // init variable
   pthread_mutex_t mutex;
-  //td2c::Data data = {counter : 0.0, nLoops : nLoops, protect : protect};
   td2c::Data data;
   data.counter = 0.0;
   data.nLoops = nLoops;
