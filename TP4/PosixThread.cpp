@@ -1,7 +1,7 @@
 #include "PosixThread.hpp"
 #include <pthread.h>
 #include <errno.h>
-#include "timespec.h"
+#include "../TP1/timespec.h"
 #include <unistd.h>
 
 
