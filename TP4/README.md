@@ -13,3 +13,5 @@ arm-linux-g++ td4b.cpp ../TP1/timespec.cpp PosixThread.cpp Mutex.cpp ../TP3/Chro
 arm-linux-g++ td4c.cpp ../TP1/timespec.cpp PosixThread.cpp Mutex.cpp ../TP3/Chrono.cpp Semaphore.cpp -o td4c.out -Wall -Wextra -lrt -lpthread
 
 ## d) Classe Fifo multitâches
+
+arm-linux-g++ td4d.cpp ../TP1/timespec.cpp PosixThread.cpp Mutex.cpp ../TP3/Chrono.cpp Fifo.hpp -o td4d.out -Wall -Wextra -lrt -lpthread
