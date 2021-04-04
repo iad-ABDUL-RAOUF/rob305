@@ -5,15 +5,30 @@
 #include <vector>
 
 class ThreadIncr : public Thread
+/**
+ * \class ThreadIncr
+ * \brief implementation of a thread, that increments a counter
+ */
 {
 public:
   ThreadIncr(unsigned int nLoops, volatile double* pCounter);
+  /**
+   * \brief constructor of an instance of the ThreadIncr class
+   * \param nLoops number of times the counter is incremented
+   * \param pCounter counter to be incremented
+   */
   ~ThreadIncr();
+  /**
+   * \brief desctructor of the ThreadIncr class
+   */
   void run() override;
+  /**
+   * \brief function executed by the thread : increments the counter
+   */
 
 private:
-  unsigned int m_nLoops;
-  volatile double* m_pCounter;
+  unsigned int m_nLoops; /** number of times the counter will be incremented */
+  volatile double* m_pCounter; /** counter to be incremented */
 };
 
 ThreadIncr::ThreadIncr(unsigned int nLoops, volatile double* pCounter) 
@@ -53,20 +68,24 @@ int main(int argc, char* argv[])
   unsigned int nTasks;
   is >> nLoops;
   is >> nTasks;
+
   // init variables
   volatile double counter = 0 ;
   std::vector<ThreadIncr> threadIncr;
   for (unsigned int i = 0; i < nTasks; i++) {
     threadIncr.push_back(ThreadIncr(nLoops, &counter));
   }
+
   // start thread
   for (unsigned int i = 0; i < nTasks; i++) {
     threadIncr[i].start();
   }
+
   // wait for end of thread
   for (unsigned int i = 0; i < nTasks; i++) {
     threadIncr[i].join();
   }
+
   // display result
   std::cout<<"counter = "<<counter<<std::endl;
   return 0;
