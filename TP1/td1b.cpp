@@ -15,10 +15,6 @@ namespace td1b
 void handler(int /*sig*/, siginfo_t* si, void* /*unused*/)
 {
   int* p_counter = (int*) si-> si_value.sival_ptr;
-  /*
-  int& counter = *((int*) si-> si_value.sival_ptr);
-  et ensuite on peut directmeent manipuler counter au lieu de *p_counter
-  */
   *p_counter += 1; // ou p_counter[0]
   std::cout << *p_counter << std::endl;
 }
