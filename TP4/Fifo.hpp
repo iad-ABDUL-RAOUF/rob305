@@ -8,16 +8,39 @@
 // header
 template <class T>
 class Fifo
+/**
+ * \class Fifo
+ * \brief implements a FIFO
+ */
 {
 public:
   class EmptyException;
+  /**
+   * \brief exception thown if a thread tries to pop from an empty fifo
+   */
 
 public:
   Fifo();
+  /**
+   * \brief constructor of an instance of the Fifo class
+   */
   ~Fifo();
+  /**
+   * \brief destructor of an instance of the Fifo class
+   */
   void push(T element);
+  /**
+   * \brief pushes a new element in the Fifo
+   */
   T pop();
+  /**
+   * \brief extracts the last element from the Fifo
+   */
   T pop (double timeout_ms);
+  /**
+   * \brief tries to extracts the last element from the Fifo for a definite duration
+   * \param timeout_ms time during which the htread tries to extract the last element from the Fifo
+   */
 
 private:
   std::queue<T> elements;
