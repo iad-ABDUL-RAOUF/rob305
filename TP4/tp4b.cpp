@@ -1,5 +1,5 @@
 #include "PosixThread.hpp"
-#include "mutex.h"
+#include "Mutex.hpp"
 #include <iostream>
 #include <sstream>
 #include <string>
