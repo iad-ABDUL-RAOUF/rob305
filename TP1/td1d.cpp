@@ -9,6 +9,13 @@
 namespace td1d
 {
 unsigned int incr(unsigned int nLoops, double* pCounter, volatile bool *pStop)
+/**
+ * \brief increments a counter n times or until a stop signal is sent
+ * \param nLoops number of times the counter is incremented
+ * \param pCounter counter to be incremented
+ * \param pStop boolean that stops the incrementation if true
+ * \return final number of loops
+ */
 {
   unsigned int i = 0;
   while ((i < nLoops) && (!*pStop))
@@ -20,12 +27,19 @@ unsigned int incr(unsigned int nLoops, double* pCounter, volatile bool *pStop)
 }
 
 void callBack(int /*sig*/, siginfo_t* si, void* /*unused*/)
+/**
+ * \brief callback function when the timer ends, stops the incrementation fo a counter
+ */
 {
   volatile bool *pstop = (volatile bool*) si-> si_value.sival_ptr;
   *pstop = true;
 }
 
 void calib (float *affine_param)
+/**
+ * \brief calibrating the incr function
+ * \param affine_param storage of the calibrated parameters
+ */
 {
   unsigned int nLoops = UINT_MAX;
   float iLoop[2];
@@ -74,6 +88,8 @@ void calib (float *affine_param)
 
 int main(int argc, char* argv[])
 {  
+  // Testing incr function
+
   // init varaible
   unsigned int nLoops = UINT_MAX;
   unsigned int iLoop = 0;
@@ -113,11 +129,14 @@ int main(int argc, char* argv[])
   std::cout << "perform calibration " << std::endl;
   
   
-  // calibrate incr
+  // Calibrating
+
   float affine_param[2]; // a, b
   td1d::calib(affine_param);
 
-  // verify calibration
+
+  // Verifying calibration
+
   nLoops = 1000000000;
   stop = false;
   

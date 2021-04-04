@@ -6,6 +6,11 @@
 
 
 void incr(unsigned int nLoops, double* pCounter)
+/**
+ * \brief increments a counter n times
+ * \param nLoops number of times the counter is incremented
+ * \param pCounter counter to be incremented
+ */
 {
   for (unsigned int i = 0; i < nLoops; i++)
   {
@@ -24,7 +29,7 @@ int main(int argc, char* argv[])
   std::istringstream is(argv[1]);
   unsigned int nLoops;
   is >> nLoops;
-  // init varaible
+  // init variable
   double counter = 0.0;
   // perform task
   timespec begin_ts = timespec_now();
@@ -36,37 +41,3 @@ int main(int argc, char* argv[])
   std::cout << "time : " << duration.tv_sec << ","<< std::setfill ('0') << std::setw (9) << duration.tv_nsec << "s" << std::endl;
 }
 
-
-/*
-  for (int i=1; i < argc; ++i)
-  {
-    params += argv[i];
-    params += " ";
-  }
-
-  std::istringstream is(params);
-*/
-
-/*
-en C
-#include <stdio.h>
-int main(int argc, char* argv[])
-{
-  if (argc blablabla)
-  {
-    printf("")
-  }
-
-  unsigned param;
-  sscanf(argv[1], "%d", &param);
-
-  // ou des truc du genre atoi
-  return 0;
-}
-
-
-
-*/
-
-//#include <cstdlib>
-// std::atoi(argv[1])

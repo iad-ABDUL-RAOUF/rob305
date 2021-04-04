@@ -28,6 +28,7 @@ int main()
 {
   volatile int counter = 0;
 
+  // init timer
   struct sigaction sa;
   sa.sa_flags = SA_SIGINFO;
   sa.sa_sigaction = td1b::handler;
