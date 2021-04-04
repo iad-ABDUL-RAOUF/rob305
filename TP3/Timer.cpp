@@ -1,5 +1,5 @@
 #include "Timer.hpp"
-#include "timespec.h"
+#include "../TP1/timespec.h"
 #include <iostream>
 
 

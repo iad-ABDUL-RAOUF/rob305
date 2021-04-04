@@ -3,7 +3,7 @@
 #include <sstream>
 #include <string>
 #include <pthread.h>
-#include "timespec.h"
+#include "../TP1/timespec.h"
 
 
 namespace td2a

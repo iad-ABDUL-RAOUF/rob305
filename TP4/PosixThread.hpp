@@ -2,7 +2,7 @@
 #include <exception>
 #include <iostream>
 #include <string>
-#include "Chrono.h"
+#include "../TP3/Chrono.h"
 
 class PosixThread
 {
@@ -46,8 +46,8 @@ private:
 class Thread : public PosixThread
 {
 public:
-  Thread() : PosixThread() {};
-  ~Thread() {};
+  Thread();
+  ~Thread();
   void start();
   void sleep_ms(double delay_ms);
   double startTime_ms();
@@ -55,7 +55,7 @@ public:
   double exectTime_ms();
 
 protected:
-  virtual void run();
+  virtual void run() = 0;
 
 private:
   static void* call_run(void* v_thread);
