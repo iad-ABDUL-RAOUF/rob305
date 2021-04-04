@@ -10,3 +10,4 @@ arm-linux-g++ td3b.cpp Timer.cpp CountDown.cpp ../TP1/timespec.cpp -o tp3b.out -
 
 ## c) Calibration en temps d’une boucle
 
+arm-linux-g++ td3c.cpp Timer.cpp CpuLoop.cpp Calibrator.cpp Looper.cpp ../TP1/timespec.cpp Chrono.cpp -o tp3c.out -Wall -Wextra -lrt -lpthread
