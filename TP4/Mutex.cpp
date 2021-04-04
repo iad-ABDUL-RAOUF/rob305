@@ -18,16 +18,6 @@ Mutex::~Mutex()
     pthread_cond_destroy(&posixCondId);
 }
 
-// pthread_mutex_t Mutex::getMutexId()
-// {
-//     return posixId;
-// }
-
-// pthread_cond_t Mutex::getMutexCondId();
-// {
-//     return posixCondId;
-// }
-
 void Mutex::lock()
 {
     pthread_mutex_lock(&posixId);
