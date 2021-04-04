@@ -43,8 +43,8 @@ public:
    */
 
 private:
-  std::queue<T> elements;
-  Mutex mutex;
+  std::queue<T> elements; /** storage for the elements in the fifo */
+  Mutex mutex; /** mutex to protect the fifo */
 };
 
 
