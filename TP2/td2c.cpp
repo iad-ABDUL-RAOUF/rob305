@@ -101,10 +101,14 @@ int main(int argc, char *argv[])
   std::cout << "nLoops = " << nLoops << ", nTasks = " << nTasks << ", protect = " << protect << ", schedPolicyInput = " << schedPolicyInput << std::endl;
 
   // init variable
-  td2c::Data data = {counter : 0.0, nLoops : nLoops, protect : protect };
+  pthread_mutex_t mutex;
+  //td2c::Data data = {counter : 0.0, nLoops : nLoops, protect : protect};
+  td2c::Data data;
+  data.counter = 0.0;
+  data.nLoops = nLoops;
+  data.mutex = mutex;
   data.protect = protect;
   pthread_mutex_init(&data.mutex, nullptr);
-
   // mian thread priority
   sched_param schedParams;
   schedParams.sched_priority = sched_get_priority_max(schedPolicy);
