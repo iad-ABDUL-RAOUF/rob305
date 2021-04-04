@@ -102,6 +102,15 @@ bool PosixThread::getScheduling(int *p_schedPolicy, int *p_priority)
 
 
 // classe Thread
+Thread::Thread()
+: PosixThread()
+{
+}
+
+Thread::~Thread()
+{
+}
+
 void Thread::start()
 {
   chrono.restart();
@@ -132,5 +141,6 @@ void* Thread::call_run(void* v_thread)
 {
   Thread *thread = (Thread*) v_thread;
   thread->run();
+
   return nullptr;
 }
