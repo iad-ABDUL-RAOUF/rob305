@@ -56,7 +56,6 @@ int main(int argc, char* argv[])
   // init variables
   volatile double counter = 0 ;
   std::vector<ThreadIncr> threadIncr;
-  // ThreadIncr* threadIncr = (ThreadIncr*)malloc(sizeof(ThreadIncr) * nTasks);
   for (unsigned int i = 0; i < nTasks; i++) {
     threadIncr.push_back(ThreadIncr(nLoops, &counter));
   }
