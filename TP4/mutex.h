@@ -2,6 +2,8 @@
 # define MUTEX_H
 
 #include <pthread.h>
+#include <exception>
+#include <string>
 
 class Mutex
 {
@@ -27,11 +29,14 @@ public:
 private:
     pthread_mutex_t posixId;
     pthread_cond_t posixCondId;
-}
+};
 
 
 class Mutex::Monitor
 {
+public:
+    class TimeoutException;
+
 public:
     void wait();
     bool wait(double timeout_ms);
@@ -41,10 +46,7 @@ public:
 protected:
     Monitor(Mutex& m);
 
-public:
-    class TimeoutException;
-
-private:
+protected:
     Mutex& m_mutex;
 };
 
@@ -67,21 +69,15 @@ class Mutex::Lock : public Mutex::Monitor
 {
 public:
     Lock(Mutex& m);
-    Lock(Mutex& m, double timeout_ms) throw TimeoutException;
-    ~Lock()
-
-private:
-    Mutex& m_mutex;
-}
+    Lock(Mutex& m, double timeout_ms);
+    ~Lock();
+};
 
 class Mutex::TryLock : public Mutex::Monitor
 {
 public:
-    TryLock(Mutex& m) throw TimeoutException;
+    TryLock(Mutex& m);
     ~TryLock();
-
-private:
-    Mutex& m_mutex;
-}
+};
 
 #endif
