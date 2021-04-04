@@ -24,7 +24,7 @@ public:
   /**
    * \brief constructor of an instance of the Timer class
    */
-  virtual void start(double duration_ms); 
+  virtual void start(double duration_ms);
   /**
    * \brief starts the posix timer
    * \param duration_ms duration of the posix timer, in milliseconds
@@ -41,7 +41,7 @@ protected:
    */
 
 private:
-  static void call_callback(int, siginfo_t* si, void*);
+  static void call_callback(int, siginfo_t *si, void *);
   /**
    * \brief callback function that is called when a timer ends, calling callback
    * \param si info that is passed to the callback function, pointer to the instance of the timer
@@ -53,15 +53,20 @@ protected:
 private:
   struct sigaction sa_; /** action to be done when the timer ends */
   struct sigevent sev_; /** event associated with the end of the timer */
-  void* p_data_; 
 };
-
 
 class PeriodicTimer : public Timer
+/**
+ * \class PeriodicTimer
+ * \brief implements a posix timer that restarts when it ends.
+ */
 {
-public :
+public:
   void start(double duration_ms) override;
+  /**
+   * \brief starts the periodic timer
+   * \param duration_ms duration of each period of the timer, in milliseconds
+   */
 };
-
 
 #endif
