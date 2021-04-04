@@ -1,5 +1,5 @@
-#ifndef MUTEX_H
-# define MUTEX_H
+#ifndef Mutex_h_INCLUDED
+#define Mutex_h_INCLUDED
 
 #include <pthread.h>
 #include <exception>
