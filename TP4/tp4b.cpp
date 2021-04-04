@@ -8,19 +8,19 @@
 class ThreadIncr : public Thread
 {
 public:
-  ThreadIncr(unsigned int nLoops, volatile double* pCounter);
+  ThreadIncr(unsigned int nLoops, volatile double* pCounter, Mutex& mutex);
   ~ThreadIncr();
   void run() override;
 
 private:
   unsigned int m_nLoops;
   volatile double* m_pCounter;
-  Mutex mutex
+  Mutex& mutex;
 
 };
 
-ThreadIncr::ThreadIncr(unsigned int nLoops, volatile double* pCounter) 
-: Thread(), m_nLoops(nLoops), m_pCounter(pCounter)
+ThreadIncr::ThreadIncr(unsigned int nLoops, volatile double* pCounter, Mutex& mutex) 
+: Thread(), m_nLoops(nLoops), m_pCounter(pCounter), mutex(mutex)
 {
 }
 
@@ -33,7 +33,7 @@ void ThreadIncr::run()
   for (unsigned int i = 0; i<m_nLoops; i++)
   {
     {
-      Mutex::Lock lock(mutex)
+      Mutex::Lock lock(mutex);
       *m_pCounter += 1;
     }
     
@@ -62,10 +62,11 @@ int main(int argc, char* argv[])
   is >> nTasks;
   // init variables
   volatile double counter = 0 ;
+  Mutex mutex;
   std::vector<ThreadIncr> threadIncr;
   // ThreadIncr* threadIncr = (ThreadIncr*)malloc(sizeof(ThreadIncr) * nTasks);
   for (unsigned int i = 0; i < nTasks; i++) {
-    threadIncr.push_back(ThreadIncr(nLoops, &counter));
+    threadIncr.push_back(ThreadIncr(nLoops, &counter, mutex));
   }
   // start thread
   for (unsigned int i = 0; i < nTasks; i++) {
