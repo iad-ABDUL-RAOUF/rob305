@@ -7,28 +7,40 @@
 
 
 namespace td2a
+/** \namespace td2a
+ * space that defines the data structure and the incremental function for the TP2a
+ */
 {
 struct Data
+/**
+ * \struct Data
+ * daat structure to be passed on the thread
+ */
 {
-  /* data */
-  volatile double counter;
-  unsigned int nLoops;
+  volatile double counter; /** counter to be incremented */
+  unsigned int nLoops; /** number of times the counter will be incremented */
 };
 
 void incr(Data &data)
+/**
+ * \brief implemented in different threads, increments the counter
+ * \param data structure with the counter and the number of loops
+ */
 {
   for (unsigned int i = 0; i < data.nLoops; i++)
   {
     data.counter += 1;
   }
-  
-  
 }
 } // namespace td2a
 
 
 
 void* call_incr(void* v_data)
+/**
+ * \brief caller of the incr function by the thread
+ * \param v_data data strcture to be passed to the thread
+ */
 {
   td2a::Data* p_data = (td2a::Data*) v_data;
   td2a::incr(*p_data);
@@ -39,9 +51,9 @@ int main(int argc, char* argv[])
 {
   int status = 0;
   // load parameters
-  if (argc != 4)
+  if (argc != 3)
   {
-    std::cerr << "USAGE: " << "<thisExecutable> <nLoops> <nTasks> <schedPolicy>" << std::endl;
+    std::cerr << "USAGE: " << "<thisExecutable> <nLoops> <nTasks> " << std::endl;
     return 1;
   }
   std::string params;
@@ -53,56 +65,26 @@ int main(int argc, char* argv[])
   std::istringstream is(params);
   unsigned int nLoops;
   unsigned int nTasks;
-  std::string schedPolicyInput;
-  int schedPolicy = SCHED_OTHER;
   is >> nLoops;
   is >> nTasks;
-  is >> schedPolicyInput;
-  if (std::string(argv[2]) == "SCHED_RR")
-  {
-    schedPolicy = SCHED_RR;
-  }
-  else if (std::string(argv[2]) == "SCHED_FIFO")
-  {
-    schedPolicy = SCHED_FIFO;
-  }
-  else if (!(std::string(argv[2]) == "SCHED_OTHER"))
-  {
-    fprintf(stderr, "Unkown scheduling policy : %s\n", argv[4]);
-    status = 1;
-  }
 
-  std::cout << "nLoops = " << nLoops << ", nTasks = " << nTasks <<  ", schedPolicyInput = " << schedPolicyInput << std::endl;
+  std::cout << "nLoops = " << nLoops << ", nTasks = " << nTasks  << std::endl;
 
   // init variable
   td2a::Data data = {counter : 0.0, nLoops : nLoops};
 
-  // mian thread priority
-  sched_param schedParams;
-  schedParams.sched_priority = sched_get_priority_max(schedPolicy);
-  pthread_setschedparam(pthread_self(), schedPolicy, &schedParams);
 
-  // // init tasks
-  // int task attribute
-  pthread_attr_t attr;
-  pthread_attr_init(&attr);
-  pthread_attr_setinheritsched(&attr, PTHREAD_EXPLICIT_SCHED); // par defaut (sans ca) la politique est herite du main et alors pthread_attr_setschedpolicy(&attr, schedPolicy) est ignoree
-  pthread_attr_setschedpolicy(&attr, schedPolicy);
-  // if (std::string(argv[2]) == "SCHED_FIFO") TODO reexecuter pour verifier
-  schedParams.sched_priority = 9;
-  pthread_attr_setschedparam(&attr, &schedParams);
-  // int task
+  // init tasks
   pthread_t incrementThread[nTasks];
 
   // perform task and measure elapsed time
   timespec begin_ts = timespec_now();
   for (unsigned int i = 0; i < nTasks; i++)
   {
-    pthread_create(&incrementThread[i], &attr, call_incr, &data);
+    pthread_create(&incrementThread[i], nullptr, call_incr, &data);
   }
 
   // wait for end task
-  pthread_attr_destroy(&attr);
   for (unsigned int i = 0; i < nTasks; i++)
   {
     pthread_join(incrementThread[i], nullptr);

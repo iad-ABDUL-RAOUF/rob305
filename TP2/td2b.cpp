@@ -5,9 +5,9 @@
 #include <pthread.h>
 #include "../TP1/timespec.h"
 
-namespace td2c
-/** \namespace td2c
- * space that defines the data structure and the incremental function for the TP2c
+namespace td2b
+/** \namespace td2b
+ * space that defines the data structure and the incremental function for the TP2b
  */
 {
   struct Data
@@ -18,8 +18,6 @@ namespace td2c
   {
     volatile double counter; /** counter to be incremented */
     unsigned int nLoops;     /** number of times the counter will be incremented */
-    pthread_mutex_t mutex;   /** mutex to protect the counter */
-    bool protect;            /** true if the mutex is activated */
   };
 
   void incr(Data &data)
@@ -28,24 +26,12 @@ namespace td2c
  * \param data structure with the counter and the number of loops
  */
   {
-    if (data.protect)
+    for (unsigned int i = 0; i < data.nLoops; i++)
     {
-      for (unsigned int i = 0; i < data.nLoops; i++)
-      {
-        pthread_mutex_lock(&data.mutex);
-        data.counter += 1;
-        pthread_mutex_unlock(&data.mutex);
-      }
-    }
-    else
-    {
-      for (unsigned int i = 0; i < data.nLoops; i++)
-      {
-        data.counter += 1;
-      }
+      data.counter += 1;
     }
   }
-} // namespace td2c
+} // namespace td2b
 
 void *call_incr(void *v_data)
 /**
@@ -53,8 +39,8 @@ void *call_incr(void *v_data)
  * \param v_data data strcture to be passed to the thread
  */
 {
-  td2c::Data *p_data = (td2c::Data *)v_data;
-  td2c::incr(*p_data);
+  td2b::Data *p_data = (td2b::Data *)v_data;
+  td2b::incr(*p_data);
   return v_data;
 }
 
@@ -62,10 +48,10 @@ int main(int argc, char *argv[])
 {
   int status = 0;
   // load parameters
-  if (argc != 5)
+  if (argc != 4)
   {
     std::cerr << "USAGE: "
-              << "<thisExecutable> <nLoops> <nTasks> <protect> <schedPolicy>" << std::endl;
+              << "<thisExecutable> <nLoops> <nTasks> <schedPolicy>" << std::endl;
     return 1;
   }
   std::string params;
@@ -77,12 +63,10 @@ int main(int argc, char *argv[])
   std::istringstream is(params);
   unsigned int nLoops;
   unsigned int nTasks;
-  bool protect;
   std::string schedPolicyInput;
   int schedPolicy = SCHED_OTHER;
   is >> nLoops;
   is >> nTasks;
-  is >> protect;
   is >> schedPolicyInput;
   if (std::string(argv[2]) == "SCHED_RR")
   {
@@ -98,12 +82,10 @@ int main(int argc, char *argv[])
     status = 1;
   }
 
-  std::cout << "nLoops = " << nLoops << ", nTasks = " << nTasks << ", protect = " << protect << ", schedPolicyInput = " << schedPolicyInput << std::endl;
+  std::cout << "nLoops = " << nLoops << ", nTasks = " << nTasks << ", schedPolicyInput = " << schedPolicyInput << std::endl;
 
   // init variable
-  td2c::Data data = {counter : 0.0, nLoops : nLoops, protect : protect };
-  data.protect = protect;
-  pthread_mutex_init(&data.mutex, nullptr);
+  td2b::Data data = {counter : 0.0, nLoops : nLoops};
 
   // mian thread priority
   sched_param schedParams;
@@ -111,7 +93,7 @@ int main(int argc, char *argv[])
   pthread_setschedparam(pthread_self(), schedPolicy, &schedParams);
 
   // // init tasks
-  // int task attribute
+  // init task attribute
   pthread_attr_t attr;
   pthread_attr_init(&attr);
   pthread_attr_setinheritsched(&attr, PTHREAD_EXPLICIT_SCHED); // par defaut (sans ca) la politique est herite du main et alors pthread_attr_setschedpolicy(&attr, schedPolicy) est ignoree
@@ -119,7 +101,7 @@ int main(int argc, char *argv[])
   // if (std::string(argv[2]) == "SCHED_FIFO") TODO reexecuter pour verifier
   schedParams.sched_priority = 9;
   pthread_attr_setschedparam(&attr, &schedParams);
-  // int task
+  // init task
   pthread_t incrementThread[nTasks];
 
   // perform task and measure elapsed time
@@ -137,7 +119,6 @@ int main(int argc, char *argv[])
   }
   timespec end_ts = timespec_now();
   timespec duration = end_ts - begin_ts;
-  pthread_mutex_destroy(&data.mutex);
 
   // display result
   std::cout << "counter = " << data.counter << std::endl;
