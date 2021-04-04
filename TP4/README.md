@@ -10,5 +10,6 @@ arm-linux-g++ td4b.cpp ../TP1/timespec.cpp PosixThread.cpp Mutex.cpp ../TP3/Chro
 
 ## c) Classe Semaphore
 
+arm-linux-g++ td4c.cpp ../TP1/timespec.cpp PosixThread.cpp Mutex.cpp ../TP3/Chrono.cpp Semaphore.cpp -o td4c.out -Wall -Wextra -lrt -lpthread
 
 ## d) Classe Fifo multitâches
