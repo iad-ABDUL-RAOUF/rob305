@@ -10,26 +10,50 @@
 #include <signal.h>
 
 class Timer
+/**
+ * \class Timer
+ * \brief encapsulates the functionalities of a Posix timer
+ */
 {
 public:
   Timer();
+  /**
+   * \brief constructor of an instance of the Timer class
+   */
   virtual ~Timer();
-  virtual void start(double duration_ms); // virtual non indiqué dans l uml mais plus coherent ici
+  /**
+   * \brief constructor of an instance of the Timer class
+   */
+  virtual void start(double duration_ms); 
+  /**
+   * \brief starts the posix timer
+   * \param duration_ms duration of the posix timer, in milliseconds
+   */
   void stop();
+  /**
+   * \brief stops the posix timer
+   */
 
 protected:
   virtual void callback() = 0;
+  /**
+   * \brief callback function that is called when the timer ends. Needs to be implemented by a daughter class
+   */
 
 private:
   static void call_callback(int, siginfo_t* si, void*);
+  /**
+   * \brief callback function that is called when a timer ends, calling callback
+   * \param si info that is passed to the callback function, pointer to the instance of the timer
+   */
 
 protected:
-    timer_t tid_;
+  timer_t tid_; /** timer ID */
 
 private:
-  struct sigaction sa_; 
-  struct sigevent sev_;
-  void* p_data_;
+  struct sigaction sa_; /** action to be done when the timer ends */
+  struct sigevent sev_; /** event associated with the end of the timer */
+  void* p_data_; 
 };
 
 
@@ -41,10 +65,3 @@ public :
 
 
 #endif
-
-/*
-Timer t;
-t.stop();
-en C : Timer::stop(&t);   &this si on est dans la classe
-Timer::call_callback(i,t,d) (pas de &t car static et donc la signature respectera bien cele attendue par le timer posix)
-*/
