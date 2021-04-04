@@ -54,7 +54,7 @@ T Fifo<T>::pop()
   T element;
   {
     Mutex::Lock lock(mutex);
-    while (elements.empty)
+    while (elements.empty())
     {
       lock.wait();
     }
@@ -70,7 +70,7 @@ T Fifo<T>::pop(double timeout_ms)
   T element;
   {
     Mutex::Lock lock(mutex);
-    while (elements.empty)
+    while (elements.empty())
     {
       if (lock.wait(timeout_ms))
       {
