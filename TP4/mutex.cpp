@@ -1,4 +1,5 @@
 #include "mutex.h"
+#include <time.h>
 #include "../TP1/timespec.h"
 
 Mutex::Mutex()
@@ -34,22 +35,23 @@ void Mutex::lock()
 
 bool Mutex::lock(double timeout_ms)
 {
-    bool result = true;
-    if (pthread_mutex_timedlock(&posixId, &timespec_from_ms(timeout_ms)) == ETIMEDOUT)
+    bool isTimedOut = false;
+    timespec timeout_ts = timespec_from_ms(timeout_ms) + timespec_now();
+    if (pthread_mutex_timedlock(&posixId, &timeout_ts) == ETIMEDOUT)
     {
-        result = false;
+        isTimedOut = true;
     }
-    return result;
+    return isTimedOut;
 }
 
 bool Mutex::trylock()
 {
-    bool result = false;
-    if(pthread_mutex_trylock(posixId) == 0)
+    bool fail = false;
+    if(pthread_mutex_trylock(&posixId) != 0)
     {
-        result = true;
+        fail = true;
     }
-    return result;
+    return fail;
 }
 
 void Mutex::unlock()
@@ -58,14 +60,8 @@ void Mutex::unlock()
 }
 
 
-
-
-
-
-
+// Monitor
 Mutex::Monitor::Monitor(Mutex& m) : m_mutex(m) {}
-
-
 
 void Mutex::Monitor::wait()
 {
@@ -74,36 +70,35 @@ void Mutex::Monitor::wait()
 
 bool Mutex::Monitor::wait(double timeout_ms)
 {
-    bool result = false;
-    if (pthread_cond_timedwait(&m_mutex.posixCondId, &m_mutex.posixId,timespec_from_ms(timeout_ms)) == 0)
+    bool isTimedOut = false;
+    timespec timeout_ts = timespec_from_ms(timeout_ms) + timespec_now();
+    if (pthread_cond_timedwait(&m_mutex.posixCondId, &m_mutex.posixId, &timeout_ts) == ETIMEDOUT)
     {
-        result = true;
+        isTimedOut = true;
     }
-    return result;
+    return isTimedOut;
 }
 
 void Mutex::Monitor::notify()
 {
-    pthread_cond_signal(m_mutex.posixCondId);
+    pthread_cond_signal(&m_mutex.posixCondId);
 }
 
 void Mutex::Monitor::notifyAll()
 {
-    pthread_cond_broadcast(m_mutex.posixCondId);
+    pthread_cond_broadcast(&m_mutex.posixCondId);
 }
 
 
-
-
-
-Mutex::Lock::Lock(Mutex& m) : m_mutex(m)
+// Lock
+Mutex::Lock::Lock(Mutex& m) : Monitor(m)
 {
-    m.lock();
+    m_mutex.lock();
 }
 
-Mutex::Lock::Lock(Mutex& m, double timeout_ms) : m_mutex(m)
+Mutex::Lock::Lock(Mutex& m, double timeout_ms) : Monitor(m)
 {
-    if (m.lock(timeout_ms))
+    if (m_mutex.lock(timeout_ms))
     {
         throw TimeoutException("Timeout on mutex lock");
     }
@@ -115,14 +110,12 @@ Mutex::Lock::~Lock()
 }
 
 
-
-
-
-Mutex::TryLock::TryLock(Mutex& m) : m_mutex(m)
+// Try lock
+Mutex::TryLock::TryLock(Mutex& m) : Monitor(m)
 {
-    if(m.trylock())
+    if(m_mutex.trylock())
     {
-        throw TimeoutException("Timeout on mutex trylock()");
+        throw TimeoutException("Fail on mutex trylock()");
     }
 }
 
