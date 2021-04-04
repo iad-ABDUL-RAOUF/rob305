@@ -1,3 +1,6 @@
+#ifndef PosixThread_hpp_INCLUDED
+#define PosixThread_hpp_INCLUDED
+
 #include <pthread.h>
 #include <exception>
 #include <iostream>
@@ -63,3 +66,5 @@ private:
 private:
   Chrono chrono;
 };
+
+#endif
