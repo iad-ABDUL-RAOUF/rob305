@@ -4,7 +4,6 @@
 #include <queue>
 #include "Mutex.hpp"
 
-
 // header
 template <class T>
 class Fifo
@@ -36,7 +35,7 @@ public:
   /**
    * \brief extracts the last element from the Fifo
    */
-  T pop (double timeout_ms);
+  T pop(double timeout_ms);
   /**
    * \brief tries to extracts the last element from the Fifo for a definite duration
    * \param timeout_ms time during which the htread tries to extract the last element from the Fifo
@@ -44,10 +43,8 @@ public:
 
 private:
   std::queue<T> elements; /** storage for the elements in the fifo */
-  Mutex mutex; /** mutex to protect the fifo */
+  Mutex mutex;            /** mutex to protect the fifo */
 };
-
-
 
 // implementation
 template <class T>
@@ -57,7 +54,7 @@ Fifo<T>::Fifo()
 }
 
 template <class T>
- Fifo<T>::~Fifo()
+Fifo<T>::~Fifo()
 {
 }
 
