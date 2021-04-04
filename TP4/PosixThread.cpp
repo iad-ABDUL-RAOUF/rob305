@@ -16,16 +16,11 @@ PosixThread::PosixThread(pthread_t posixId)
 {
   sched_param schedParams;
   int schedPolicy;
-  std::cout << "pthread_getschedparam" << std::endl;
   int error = pthread_getschedparam(posixId_, &schedPolicy, &schedParams);
-  std::cout << "apres pthread_getschedparam" << std::endl;
   if (error == ESRCH)
   {
-    std::cout << "error == ESRCH" << std::endl;
     throw Exception("invalid posix thread id given in constructeur PosixThread");
-    std::cout << "apres throw Exception" << std::endl;
   }
-  std::cout << "apres if error" << std::endl;
   //keep coherence between member posixAttr_ and the thread
   pthread_attr_setschedpolicy(&posixAttr_, schedPolicy);
   pthread_attr_setschedparam(&posixAttr_, &schedParams);
